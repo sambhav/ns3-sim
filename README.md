@@ -24,4 +24,4 @@ The timing of the flows is as follows:
 
 ![Total Bytes vs Time](https://github.com/samj1912/ns3-sim/blob/master/plots/total_bytes.png)
 
-![Packet Drops vs Time](https://github.com/samj1912/ns3-sim/blob/master/plots/bytes.png)
+![Packet Drops vs Time](https://github.com/samj1912/ns3-sim/blob/master/plots/drops.png)
