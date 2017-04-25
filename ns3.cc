@@ -79,7 +79,8 @@ RxDrop (Ptr<OutputStreamWrapper> stream, Ptr<const Packet> p)
 
 
 // Function to find the total cumulative recieved bytes
-static void TotalRx(Ptr<OutputStreamWrapper> stream)
+static void
+TotalRx(Ptr<OutputStreamWrapper> stream)
 {
     Totalval = tcpsink->GetTotalRx() + cbrsink1->GetTotalRx() + cbrsink2->GetTotalRx() + cbrsink3->GetTotalRx()
                + cbrsink4->GetTotalRx() + cbrsink5->GetTotalRx();
