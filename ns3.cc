@@ -65,6 +65,16 @@ RxDrop (Ptr<OutputStreamWrapper> stream, Ptr<const Packet> p)
 }
 
 
+//Function to find the total cumulative recieved bytes
+static void TotalRx(Ptr<OutputStreamWrapper> stream)
+{
+  Totalval = tcpsink->GetTotalRx() + cbrsink1->GetTotalRx() + cbrsink2->GetTotalRx() + cbrsink3->GetTotalRx()
+      + cbrsink4->GetTotalRx() + cbrsink5->GetTotalRx();
+  *stream->GetStream()<<Simulator::Now ().GetSeconds ()<<" " <<Totalval<<std::endl;
+  Simulator::Schedule(Seconds(0.0001),&TotalRx, stream);
+}
+
+
 int
 main (int argc, char *argv[])
 {
@@ -141,6 +151,10 @@ main (int argc, char *argv[])
       NS_LOG_DEBUG ("Invalid TCP version");
       exit (1);
     }
+  std::string a_s = "bytes_"+prot+".dat";
+  std::string b_s = "drop_"+prot+".dat";
+  Ptr<OutputStreamWrapper> total_bytes_data = ascii.CreateFileStream (a_s);
+  Ptr<OutputStreamWrapper> dropped_packets_data = ascii.CreateFileStream (b_s);
 
 //
 // Explicitly create the nodes required by the topology (shown above).
@@ -306,6 +320,9 @@ main (int argc, char *argv[])
 
 
   NS_LOG_INFO ("Run Simulation.");
+
+  Simulator::Schedule(Seconds(0.00001),&TotalRx, total_bytes_data);
+
   Simulator::Stop (Seconds (1.80));
   Simulator::Run ();
   Simulator::Destroy ();
