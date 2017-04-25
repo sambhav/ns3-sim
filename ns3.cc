@@ -52,6 +52,19 @@ NS_LOG_COMPONENT_DEFINE ("TcpComparision");
 AsciiTraceHelper ascii;
 Ptr<PacketSink> cbrsink5,cbrsink4,cbrsink3,cbrsink2,cbrsink1,tcpsink;
 
+//Function to record packet drops
+static void
+RxDrop (Ptr<OutputStreamWrapper> stream, Ptr<const Packet> p)
+{
+  if(first_drop)
+  {
+    first_drop=false;
+  *stream->GetStream ()<<0<<" "<<0<<std::endl;
+  }
+  *stream->GetStream ()<<Simulator::Now ().GetSeconds ()<<" "<<++total_drops<<std::endl;
+}
+
+
 int
 main (int argc, char *argv[])
 {
@@ -281,6 +294,8 @@ main (int argc, char *argv[])
 
   tcpsink = DynamicCast<PacketSink> (sinkApps.Get (0));
 
+  devices.Get (1)->TraceConnectWithoutContext ("PhyRxDrop", MakeBoundCallback (&RxDrop, dropped_packets_data));
+
 // enable tracing
   if (tracing)
   {
@@ -288,6 +303,7 @@ main (int argc, char *argv[])
     pointToPoint.EnableAsciiAll (ascii.CreateFileStream ("tcp-comparision.tr"));
     pointToPoint.EnablePcapAll ("tcp-comparision", true);
   }
+
 
   NS_LOG_INFO ("Run Simulation.");
   Simulator::Stop (Seconds (1.80));
