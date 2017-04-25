@@ -61,6 +61,10 @@ NS_LOG_COMPONENT_DEFINE ("TcpComparision");
 AsciiTraceHelper ascii;
 Ptr<PacketSink> cbrsink5,cbrsink4,cbrsink3,cbrsink2,cbrsink1,tcpsink;
 
+int Totalval;
+int total_drops=0;
+bool first_drop=true;
+
 // Function to record packet drops
 static void
 RxDrop (Ptr<OutputStreamWrapper> stream, Ptr<const Packet> p)
