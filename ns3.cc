@@ -50,6 +50,7 @@ using namespace ns3;
 NS_LOG_COMPONENT_DEFINE ("TcpComparision");
 
 AsciiTraceHelper ascii;
+Ptr<PacketSink> cbrsink5,cbrsink4,cbrsink3,cbrsink2,cbrsink1,tcpsink;
 
 int
 main (int argc, char *argv[])
@@ -181,6 +182,104 @@ main (int argc, char *argv[])
 
   sinkApps.Start (Seconds (0.0));
   sinkApps.Stop (Seconds (1.80));
+
+  // Install applications: five CBR streams each saturating the channel
+  ApplicationContainer cbrApps;
+  uint16_t cbrPort = 12345;
+  OnOffHelper onOffHelper ("ns3::UdpSocketFactory", InetSocketAddress (i.GetAddress (1), cbrPort));
+  onOffHelper.SetAttribute ("PacketSize", UintegerValue (1024));
+  onOffHelper.SetAttribute ("OnTime",  StringValue ("ns3::ConstantRandomVariable[Constant=1]"));
+  onOffHelper.SetAttribute ("OffTime", StringValue ("ns3::ConstantRandomVariable[Constant=0]"));
+
+  onOffHelper.SetAttribute ("DataRate", StringValue ("300Kbps"));
+  onOffHelper.SetAttribute ("StartTime", TimeValue (Seconds (0.200000)));
+  onOffHelper.SetAttribute ("StopTime", TimeValue (Seconds (1.800000)));
+  cbrApps.Add (onOffHelper.Install (nodes.Get (0)));
+
+
+  ApplicationContainer cbrApps2;
+  uint16_t cbrPort2 = 12346;
+  OnOffHelper onOffHelper2 ("ns3::UdpSocketFactory", InetSocketAddress (i.GetAddress (1), cbrPort2));
+  onOffHelper2.SetAttribute ("PacketSize", UintegerValue (1024));
+  onOffHelper2.SetAttribute ("OnTime",  StringValue ("ns3::ConstantRandomVariable[Constant=1]"));
+  onOffHelper2.SetAttribute ("OffTime", StringValue ("ns3::ConstantRandomVariable[Constant=0]"));
+
+  onOffHelper2.SetAttribute ("DataRate", StringValue ("300Kbps"));
+  onOffHelper2.SetAttribute ("StartTime", TimeValue (Seconds (0.400000)));
+  onOffHelper2.SetAttribute ("StopTime", TimeValue (Seconds (1.800000)));
+  cbrApps2.Add (onOffHelper2.Install (nodes.Get (0)));
+
+  ApplicationContainer cbrApps3;
+  uint16_t cbrPort3 = 12347;
+  OnOffHelper onOffHelper3 ("ns3::UdpSocketFactory", InetSocketAddress (i.GetAddress (1), cbrPort3));
+  onOffHelper3.SetAttribute ("PacketSize", UintegerValue (1024));
+  onOffHelper3.SetAttribute ("OnTime",  StringValue ("ns3::ConstantRandomVariable[Constant=1]"));
+  onOffHelper3.SetAttribute ("OffTime", StringValue ("ns3::ConstantRandomVariable[Constant=0]"));
+
+  onOffHelper3.SetAttribute ("DataRate", StringValue ("300Kbps"));
+  onOffHelper3.SetAttribute ("StartTime", TimeValue (Seconds (0.600000)));
+  onOffHelper3.SetAttribute ("StopTime", TimeValue (Seconds (1.200000)));
+  cbrApps3.Add (onOffHelper3.Install (nodes.Get (0)));
+
+  ApplicationContainer cbrApps4;
+  uint16_t cbrPort4 = 12348;
+  OnOffHelper onOffHelper4 ("ns3::UdpSocketFactory", InetSocketAddress (i.GetAddress (1), cbrPort4));
+  onOffHelper4.SetAttribute ("PacketSize", UintegerValue (1024));
+  onOffHelper4.SetAttribute ("OnTime",  StringValue ("ns3::ConstantRandomVariable[Constant=1]"));
+  onOffHelper4.SetAttribute ("OffTime", StringValue ("ns3::ConstantRandomVariable[Constant=0]"));
+
+  onOffHelper4.SetAttribute ("DataRate", StringValue ("300Kbps"));
+  onOffHelper4.SetAttribute ("StartTime", TimeValue (Seconds (0.800000)));
+  onOffHelper4.SetAttribute ("StopTime", TimeValue (Seconds (1.400000)));
+  cbrApps4.Add (onOffHelper4.Install (nodes.Get (0)));
+
+  ApplicationContainer cbrApps5;
+  uint16_t cbrPort5 = 12349;
+  OnOffHelper onOffHelper5 ("ns3::UdpSocketFactory", InetSocketAddress (i.GetAddress (1), cbrPort5));
+  onOffHelper5.SetAttribute ("PacketSize", UintegerValue (1024));
+  onOffHelper5.SetAttribute ("OnTime",  StringValue ("ns3::ConstantRandomVariable[Constant=1]"));
+  onOffHelper5.SetAttribute ("OffTime", StringValue ("ns3::ConstantRandomVariable[Constant=0]"));
+
+  onOffHelper5.SetAttribute ("DataRate", StringValue ("300Kbps"));
+  onOffHelper5.SetAttribute ("StartTime", TimeValue (Seconds (1.000000)));
+  onOffHelper5.SetAttribute ("StopTime", TimeValue (Seconds (1.600000)));
+  cbrApps5.Add (onOffHelper5.Install (nodes.Get (0)));
+
+//
+// Now, do the actual simulation.
+//
+  // packet sinks for each cbr agent
+  PacketSinkHelper sink_1 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), cbrPort));
+  ApplicationContainer sinkApps_1 = sink_1.Install (nodes.Get (1));
+  sinkApps_1.Start (Seconds (0.0));
+  sinkApps_1.Stop (Seconds (1.8));
+  cbrsink1 = DynamicCast<PacketSink> (sinkApps_1.Get (0));
+
+  PacketSinkHelper sink_2 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), cbrPort2));
+  ApplicationContainer sinkApps_2 = sink_2.Install (nodes.Get (1));
+  sinkApps_2.Start (Seconds (0.0));
+  sinkApps_2.Stop (Seconds (1.8));
+  cbrsink2 = DynamicCast<PacketSink> (sinkApps_2.Get (0));
+
+  PacketSinkHelper sink_3 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), cbrPort3));
+  ApplicationContainer sinkApps_3 = sink_3.Install (nodes.Get (1));
+  sinkApps_3.Start (Seconds (0.0));
+  sinkApps_3.Stop (Seconds (1.8));
+  cbrsink3 = DynamicCast<PacketSink> (sinkApps_3.Get (0));
+
+  PacketSinkHelper sink_4 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), cbrPort4));
+  ApplicationContainer sinkApps_4 = sink_4.Install (nodes.Get (1));
+  sinkApps_4.Start (Seconds (0.0));
+  sinkApps_4.Stop (Seconds (1.8));
+  cbrsink4 = DynamicCast<PacketSink> (sinkApps_4.Get (0));
+
+  PacketSinkHelper sink_5 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), cbrPort5));
+  ApplicationContainer sinkApps_5 = sink_5.Install (nodes.Get (1));
+  sinkApps_5.Start (Seconds (0.0));
+  sinkApps_5.Stop (Seconds (1.8));
+  cbrsink5 = DynamicCast<PacketSink> (sinkApps_5.Get (0));
+
+  tcpsink = DynamicCast<PacketSink> (sinkApps.Get (0));
 
 // enable tracing
   if (tracing)
