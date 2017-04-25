@@ -96,6 +96,8 @@ main (int argc, char *argv[])
   bool tracing = false;
   uint32_t maxBytes = 0;
   std::string prot = "TcpWestwood";
+  double error = 0.000001;
+
 // Allow the user to override any of the defaults at
 // run-time, via command-line arguments
 
@@ -106,6 +108,8 @@ main (int argc, char *argv[])
   cmd.AddValue ("prot", "Transport protocol to use: TcpNewReno, "
                 "TcpHybla, TcpHighSpeed, TcpHtcp, TcpVegas, TcpScalable, TcpVeno, "
                 "TcpBic, TcpYeah, TcpIllinois, TcpWestwood, TcpWestwoodPlus ", prot);
+  cmd.AddValue ("error", "Packet error rate", error);
+
   cmd.Parse (argc, argv);
 
   if (prot.compare ("TcpNewReno") == 0)
