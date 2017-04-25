@@ -343,8 +343,25 @@ main (int argc, char *argv[])
   Simulator::Schedule(Seconds(0.00001),&TotalRx, total_bytes_data);
   Simulator::Schedule(Seconds(0.00001),&TraceCwnd, cw_data);
 
+  // Flow monitor
+  Ptr<FlowMonitor> flowMonitor;
+  FlowMonitorHelper flowHelper;
+  flowMonitor = flowHelper.InstallAll();
+
   Simulator::Stop (Seconds (1.80));
   Simulator::Run ();
+  Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowHelper.GetClassifier ());
+  std::map<FlowId, FlowMonitor::FlowStats> stats = flowMonitor->GetFlowStats ();
+  std::cout << std::endl << "*** Flow monitor statistics ***" << std::endl;
+  std::cout << "  Tx Packets:   " << stats[1].txPackets << std::endl;
+  std::cout << "  Tx Bytes:   " << stats[1].txBytes << std::endl;
+  std::cout << "  Offered Load: " << stats[1].txBytes * 8.0 / (stats[1].timeLastTxPacket.GetSeconds () - stats[1].timeFirstTxPacket.GetSeconds ()) / 1000000 << " Mbps" << std::endl;
+  std::cout << "  Rx Packets:   " << stats[1].rxPackets << std::endl;
+  std::cout << "  Rx Bytes:   " << stats[1].rxBytes<< std::endl;
+  std::cout << "  Throughput: " << stats[1].rxBytes * 8.0 / (stats[1].timeLastRxPacket.GetSeconds () - stats[1].timeFirstRxPacket.GetSeconds ()) / 1000000 << " Mbps" << std::endl;
+  std::cout << "  Mean delay:   " << stats[1].delaySum.GetSeconds () / stats[1].rxPackets << std::endl;
+  std::cout << "  Mean jitter:   " << stats[1].jitterSum.GetSeconds () / (stats[1].rxPackets - 1) << std::endl;
+  flowMonitor->SerializeToXmlFile("data.flowmon", true, true);
   Simulator::Destroy ();
   NS_LOG_INFO ("Done.");
 
