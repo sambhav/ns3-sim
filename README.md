@@ -20,3 +20,8 @@ The timing of the flows is as follows:
  * Simulation runs for 1800 ms
 
 ### Plots
+![Congestion Window vs Time](https://github.com/samj1912/ns3-sim/blob/master/plots/congestion.png)
+
+![Total Bytes vs Time](https://github.com/samj1912/ns3-sim/blob/master/plots/total_bytes.png)
+
+![Packet Drops vs Time](https://github.com/samj1912/ns3-sim/blob/master/plots/bytes.png)
