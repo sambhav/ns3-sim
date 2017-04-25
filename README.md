@@ -1,6 +1,14 @@
 # ns3-sim
 An ns3 simulation script to compare various TCP variants under congestion
 
+### Install Instructions:
+Requirements:
+ * ns3(3.26)
+Steps:
+ * Install ns3 and put ns3.cc in the scratch directory.
+ * Run the script using ```./waf --run "ns3"```
+ * For command line options and help, ```./waf --run "ns3 --PrintHelp"```
+
 ### Topology
     n0 ----------- n1
     
