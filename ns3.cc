@@ -74,6 +74,20 @@ static void TotalRx(Ptr<OutputStreamWrapper> stream)
   Simulator::Schedule(Seconds(0.0001),&TotalRx, stream);
 }
 
+//Function to record Congestion Window values
+static void
+CwndChange (Ptr<OutputStreamWrapper> stream, uint32_t oldCwnd, uint32_t newCwnd)
+{
+  *stream->GetStream () << Simulator::Now ().GetSeconds () << " " << newCwnd << std::endl;
+}
+
+//Trace Congestion window length
+static void
+TraceCwnd (Ptr<OutputStreamWrapper> stream)
+{
+  //Trace changes to the congestion window
+  Config::ConnectWithoutContext ("/NodeList/0/$ns3::TcpL4Protocol/SocketList/0/CongestionWindow", MakeBoundCallback (&CwndChange,stream));
+}
 
 int
 main (int argc, char *argv[])
@@ -153,8 +167,13 @@ main (int argc, char *argv[])
     }
   std::string a_s = "bytes_"+prot+".dat";
   std::string b_s = "drop_"+prot+".dat";
+  std::string c_s = "cw_"+prot+".dat";
+
+// Create file streams for data storage
   Ptr<OutputStreamWrapper> total_bytes_data = ascii.CreateFileStream (a_s);
   Ptr<OutputStreamWrapper> dropped_packets_data = ascii.CreateFileStream (b_s);
+  Ptr<OutputStreamWrapper> cw_data = ascii.CreateFileStream (c_s);
+
 
 //
 // Explicitly create the nodes required by the topology (shown above).
@@ -322,6 +341,7 @@ main (int argc, char *argv[])
   NS_LOG_INFO ("Run Simulation.");
 
   Simulator::Schedule(Seconds(0.00001),&TotalRx, total_bytes_data);
+  Simulator::Schedule(Seconds(0.00001),&TraceCwnd, cw_data);
 
   Simulator::Stop (Seconds (1.80));
   Simulator::Run ();
